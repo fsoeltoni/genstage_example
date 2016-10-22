@@ -8,7 +8,7 @@ defmodule GenstageExample.Producer do
   end
 
   def init(counter) do
-    {:producer, counter}
+    {:producer, counter, dispatcher: GenStage.BroadcastDispatcher}
   end
 
   def handle_demand(demand, state) do
