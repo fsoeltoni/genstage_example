@@ -6,11 +6,13 @@ defmodule GenstageExample do
 
     children = [
       worker(GenstageExample.Producer, []),
-      worker(GenstageExample.Consumer, [], id: 1),
-      worker(GenstageExample.Consumer, [], id: 2),
     ]
+    consumers = for id <- 1..(System.schedulers_online * 12) do
+                              # helper to get the number of cores on machine
+                  worker(GenstageExample.Consumer, [], id: id)
+                end
 
     opts = [strategy: :one_for_one, name: GenstageExample.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children ++ consumers, opts)
   end
 end
