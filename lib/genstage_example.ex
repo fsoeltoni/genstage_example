@@ -5,6 +5,7 @@ defmodule GenstageExample do
     import Supervisor.Spec, warn: false
 
     children = [
+      supervisor(GenstageExample.Repo, []),
       worker(GenstageExample.Producer, []),
     ]
     consumers = for id <- 1..(System.schedulers_online * 12) do
