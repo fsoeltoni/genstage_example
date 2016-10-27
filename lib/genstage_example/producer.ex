@@ -13,8 +13,14 @@ defmodule GenstageExample.Producer do
     {:producer, counter}
   end
 
-  def handle_demand(demand, state) do
+  def handle_demand(demand, state) when demand > 0 do
     limit = demand + state
+    {count, events} = take(limit)
+    {:noreply, events, limit - count}
+  end
+
+  def handle_info(:data_inserted, state) do
+    limit = state
     {count, events} = take(limit)
     {:noreply, events, limit - count}
   end

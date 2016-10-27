@@ -12,7 +12,10 @@ defmodule GenstageExample.Consumer do
 
   def handle_events(events, _from, state) do
     for event <- events do
-      IO.inspect {self(), event, state}
+
+      %{id: id, payload: payload} = event
+      {module, function, args} = :erlang.binary_to_term(payload)
+      Kernel.apply(module, function, [args])
     end
     {:noreply, [], state}
   end
