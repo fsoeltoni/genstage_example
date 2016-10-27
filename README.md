@@ -2,7 +2,7 @@
 
 ## Stupid-Simple API
 So, its not on hex or anything. But why not just `cp -r` it into an umbrella app and throw it in the deps with `in_umbrella: true` if youre really gonna use it?
-This is just an example, not real software.
+This is just an example, not real software. There aren't even tests.
 
 ```elixir
 # We just want to pass a module, function, and args to `GenStage.enqueue/3`
