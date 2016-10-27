@@ -1,24 +1,17 @@
-# GenstageExample
+# Genstage Example - Task Runner
 
-**TODO: Add description**
+## Stupid-Simple API
+So, its not on hex or anything. But why not just `cp -r` it into an umbrella app and throw it in the deps with `in_umbrella: true` if youre really gonna use it?
+This is just an example, not real software.
 
-## Installation
+```elixir
+# We just want to pass a module, function, and args to `GenStage.enqueue/3`
+# like so:
+iex> GenstageExample.enqueue(IO, :puts, ["farts"])
+#=> A bunch of database background stuff happens etc
+#=> Job is added to queue
+#=> Job runs, yay!
+#=> Try spinning it up with a ton, it has 12 workers per cpu core
+```
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
-
-  1. Add `genstage_example` to your list of dependencies in `mix.exs`:
-
-    ```elixir
-    def deps do
-      [{:genstage_example, "~> 0.1.0"}]
-    end
-    ```
-
-  2. Ensure `genstage_example` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:genstage_example]]
-    end
-    ```
-
+## Yep, thats it.
