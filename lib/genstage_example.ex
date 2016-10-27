@@ -4,19 +4,22 @@ defmodule GenstageExample do
   alias GenstageExample.{Producer, Repo}
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
-
-    children = [
-      supervisor(GenstageExample.Repo, []),
-      supervisor(Task.Supervisor, [[name: GenstageExample.TaskSupervisor]]),
-      worker(Producer, []),
-    ]
+                          # 12 workers / system core
     consumers = for id <- (0..System.schedulers_online * 12) do
-                              # helper to get the number of cores on machine
                   worker(GenstageExample.Consumer, [], id: id)
                 end
+    producers = [
+                 worker(Producer, []),
+                ]
+
+    supervisors = [
+                    supervisor(GenstageExample.Repo, []),
+                    supervisor(Task.Supervisor, [[name: GenstageExample.TaskSupervisor]]),
+                  ]
+    children = supervisors ++ producers ++ consumers
 
     opts = [strategy: :one_for_one, name: GenstageExample.Supervisor]
-    Supervisor.start_link(children ++ consumers, opts)
+    Supervisor.start_link(children, opts)
   end
 
   def start_later(module, function, args) do
