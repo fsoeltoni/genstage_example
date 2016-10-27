@@ -5,8 +5,12 @@ So, its not on hex or anything. But why not just `cp -r` it into an umbrella app
 This is just an example, not real software. There aren't even tests.
 
 ```elixir
+# set the db username/pw to whatever yours is
+# then `mix do deps.get, compile, ecto.create, ecto.migrate`
+
 # We just want to pass a module, function, and args to `GenStage.enqueue/3`
 # like so:
+$ iex -S mix
 iex> GenstageExample.enqueue(IO, :puts, ["farts"])
 #=> A bunch of database background stuff happens etc
 #=> Job is added to queue
