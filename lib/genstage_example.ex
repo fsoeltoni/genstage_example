@@ -1,14 +1,16 @@
 defmodule GenstageExample do
   use Application
 
+  alias GenstageExample.{Producer, Repo}
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
     children = [
       supervisor(GenstageExample.Repo, []),
-      worker(GenstageExample.Producer, []),
+      supervisor(Task.Supervisor, [[name: GenstageExample.TaskSupervisor]]),
+      worker(Producer, []),
     ]
-    consumers = for id <- 1..(System.schedulers_online * 12) do
+    consumers = for id <- (0..System.schedulers_online * 12) do
                               # helper to get the number of cores on machine
                   worker(GenstageExample.Consumer, [], id: id)
                 end
@@ -19,13 +21,15 @@ defmodule GenstageExample do
 
   def start_later(module, function, args) do
     payload = {module, function, args} |> :erlang.term_to_binary
-    GenstageExample.Repo.insert_all("tasks", [
-                                    %{status: "waiting", payload: payload}
-                                    ])
+    Repo.insert_all("tasks", [
+                              %{status: "waiting", payload: payload}
+                             ])
     notify_producer
   end
 
   def notify_producer do
-    send(GenstageExample.Producer, :data_inserted)
+    send(Producer, :data_inserted)
   end
+
+  defdelegate enqueue(module, function, args), to: Producer
 end
