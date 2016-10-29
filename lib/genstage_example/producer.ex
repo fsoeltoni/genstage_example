@@ -8,14 +8,15 @@ defmodule GenstageExample.Producer do
     GenStage.start_link(__MODULE__, 0, name: @name)
   end
 
-  def enqueue(module, function, args) do
-    GenstageExample.Task.enqueue("waiting", :erlang.term_to_binary({module, function, args}))
-    Process.send(@name, :enqueued, [])
-    :ok
-  end
-
   def init(counter) do
     {:producer, counter}
+  end
+
+  def enqueue(module, function, args) do
+    payload = {module, function, args} |> construct_payload
+    GenstageExample.Task.enqueue("waiting", payload)
+    Process.send(@name, :enqueued, [])
+    :ok
   end
 
   def handle_cast(:enqueued, state) do
@@ -35,5 +36,9 @@ defmodule GenstageExample.Producer do
     {count, events} = GenstageExample.Task.take(limit)
     Process.send_after(@name, :enqueued, 60_000)
     {:noreply, events, limit - count}
+  end
+
+  defp construct_payload({module, function, args}) do
+    {module, function, args} |> :erlang.term_to_binary
   end
 end
