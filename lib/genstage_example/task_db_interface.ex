@@ -1,6 +1,5 @@
 defmodule GenstageExample.TaskDBInterface do
   import Ecto.Query
-  # import GenstageExample.Repo
 
   def take_tasks(limit) do
     {:ok, {count, events}} =

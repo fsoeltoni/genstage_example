@@ -39,7 +39,7 @@ defmodule GenstageExample.Consumer do
   end
 
   defp update(status, id) do
-    GenstageExample.Task.update_status(id, status)
+    GenstageExample.TaskDBInterface.update_task_status(id, status)
   end
 
   defp yield_to_and_update_task(task, id) do
